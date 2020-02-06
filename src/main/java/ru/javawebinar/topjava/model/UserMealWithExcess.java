@@ -39,8 +39,4 @@ public class UserMealWithExcess {
     public int getCalories() {
         return calories;
     }
-
-    /* public void setExcess(boolean excess) {
-        this.excess = excess;
-    }*/
 }
