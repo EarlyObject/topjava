@@ -10,8 +10,9 @@
 
 <h3>Product List</h3>
 <c:set var="total" value="0"></c:set>
-<table border="1" cellpadding="2" cellspacing="2">
-    <tr>
+<table>
+
+<tr>
         <th>Дата/Время</th>
         <th>Описание</th>
         <th>Калории</th>
@@ -24,11 +25,8 @@
             <td>${meal.getCalories() }</td>
         </tr>
     </c:forEach>
-    <tr>
-        <td colspan="5" align="right">Total</td>
-        <td>${total }</td>
-    </tr>
-</table>
+
+<</table>
 
 </body>
 </html>

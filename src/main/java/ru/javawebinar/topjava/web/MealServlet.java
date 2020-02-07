@@ -13,10 +13,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-
-//@WebServlet("/demo")
-@WebServlet("/meal")
-
+@WebServlet("/meals")
 public class MealServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -45,5 +42,4 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
-
 }
