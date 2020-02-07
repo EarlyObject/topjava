@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="color" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <body bgcolor="#F0F8FF">
@@ -20,24 +21,11 @@
 
     <c:forEach var="meal" items="${meals}">
 
-
-
-        <c:set var="caloriesValue" value="${meal.getCalories()}"/>
-        <c:if test="${caloriesValue > 900}">
-            <tr style="color: red">
-                <td>${meal.getDateTime() }</td>
-                <td>${meal.getDescription()}</td>
-                <td>${meal.getCalories() }</td>
-            </tr>
-        </c:if>
-
-        <c:if test="${caloriesValue < 900}">
-            <tr style="color: green">
-                <td>${meal.getDateTime() }</td>
-                <td>${meal.getDescription()}</td>
-                <td>${meal.getCalories() }</td>
-            </tr>
-        </c:if>
+        <tr style="${meal.getCalories() >900 ? "color: red" :  "color: green" }">
+            <td>${meal.getDateTime() }</td>
+            <td>${meal.getDescription()}</td>
+            <td>${meal.getCalories() }</td>
+        </tr>
 
     </c:forEach>
 
