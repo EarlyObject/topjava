@@ -129,14 +129,12 @@
     </thead>
     <tbody>
     <c:forEach var="meal" items="${meals}">
-
-        <tr style="${meal.getCalories() >900 ? "color: red" :  "color: green" }">
+        <tr style="${meal.isExcess()==true ? "color: red" :  "color: green" }">
             <td><fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
             <td>${meal.getDescription()}</td>
             <td>${meal.getCalories() }</td>
         </tr>
-
     </c:forEach>
     </tbody>
 </table>

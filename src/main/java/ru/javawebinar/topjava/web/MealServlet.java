@@ -38,9 +38,9 @@ public class MealServlet extends HttpServlet {
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<MealTo> mealToList = MealsUtil.filteredByStreams(meals, LocalTime.of(0, 0), LocalTime.of(7, 0), 2000);
+        List<MealTo> mealToList = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
 
-        request.setAttribute("meals", meals);
+        request.setAttribute("meals", mealToList);
         request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
 
