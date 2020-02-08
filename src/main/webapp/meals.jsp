@@ -133,7 +133,9 @@
             <td><fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
             <td>${meal.getDescription()}</td>
-            <td>${meal.getCalories() }</td>
+            <td>${meal.getCalories()}</td>
+            <td><a href="CrudServlet?action=edit&mealId=${meal.getId()}">Update</a></td>
+            <td><a href="CrudServlet?action=delete&mealId=${meal.getId()}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>

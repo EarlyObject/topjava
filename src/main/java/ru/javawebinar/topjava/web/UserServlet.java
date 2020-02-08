@@ -13,6 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
+    private static final long serialVersionUID = 1905829153396099766L;
     private static final Logger log = getLogger(UserServlet.class);
 
     @Override
