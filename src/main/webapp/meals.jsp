@@ -129,7 +129,7 @@
     </thead>
     <tbody>
     <c:forEach var="meal" items="${meals}">
-        <tr style="${meal.isExcess()==true ? "color: red" :  "color: green" }">
+        <tr style="${meal.isExcess()==true ? "color: red" :  "color: green"}">
             <td><fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
             <td>${meal.getDescription()}</td>
@@ -140,6 +140,7 @@
     </c:forEach>
     </tbody>
 </table>
+<p><a href="CrudServlet?action=insert">Add Meal</a></p>
 <hr>
 <footer id="main-footer">
     <p>

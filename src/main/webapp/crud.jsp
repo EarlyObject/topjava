@@ -5,10 +5,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link type="text/css"
+          href="css/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
     <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
 
-    <title>Подсчет калорий</title>
+    <title>Добавить блюдо</title>
 </head>
 
 
@@ -27,7 +29,7 @@
 </script>
 
 <form method="POST" action='CrudServlet' name="frmAddMeal">
-    Date : <input type="date" readonly="readonly" name="date"
+    Date : <input type="date" name="date"
                      value="<c:out value="${meal.dateTime}" />" /> <br />
     Description : <input
         type="text" name="description"

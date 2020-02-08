@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.DAO;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.MealTo;
 
 import java.util.List;
 
@@ -20,8 +21,10 @@ public class MealDAO {
       listOfMeal.update(meal);
     }
 
-    public List<Meal> getAllMeal() {
-        List<Meal> meals = listOfMeal.getAll();
+    public List<MealTo> getAllMeal() {
+      //  List<Meal> meals = listOfMeal.getAll();
+        List<MealTo> meals = listOfMeal.convertToMealTo();
+
 
         return meals;
     }
