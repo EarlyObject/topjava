@@ -20,10 +20,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class CrudServlet extends HttpServlet {
     private static final long serialVersionUID = 3284493691900302606L;
     private static final Logger log = getLogger(CrudServlet.class);
-
     private static String INSERT_OR_EDIT = "crud.jsp";
     private static String LIST_OF_MEAL = "meals.jsp";
-    private static String UPDATE_MEAL = "update.jsp";
 
     private MealDAO dao;
 
@@ -41,10 +39,11 @@ public class CrudServlet extends HttpServlet {
             dao.deleteMeal(mealId);
             forward = LIST_OF_MEAL;
             request.setAttribute("meals", dao.getAllMeal());
-        } else if (action.equalsIgnoreCase("edit")) {
+        } else if (action.equalsIgnoreCase("edit"))  {
             forward = INSERT_OR_EDIT;
             Integer mealId = Integer.parseInt(request.getParameter("mealId"));
             Meal meal = dao.getMealById(mealId);
+            request.setAttribute("mealId", mealId);
             request.setAttribute("meal", meal);
         } else if (action.equalsIgnoreCase("listOfMeals")) {
             forward = LIST_OF_MEAL;
@@ -55,14 +54,10 @@ public class CrudServlet extends HttpServlet {
 
         RequestDispatcher view = request.getRequestDispatcher(forward);
         view.forward(request, response);
-
-        //request.setAttribute("meals", listToDisplay);
-        // request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
@@ -70,7 +65,6 @@ public class CrudServlet extends HttpServlet {
             String description = request.getParameter("description");
             Integer calories = Integer.parseInt(request.getParameter("calories"));
             String mealId = request.getParameter("mealId");
-
 
             if (mealId == null) {
                 Meal meal = new Meal(localDateTime, description, calories);
@@ -82,7 +76,6 @@ public class CrudServlet extends HttpServlet {
                 meal.setDescription(description);
                 dao.updateMeal(meal);
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
