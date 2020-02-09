@@ -21,6 +21,7 @@ public class CrudServlet extends HttpServlet {
     private static final long serialVersionUID = 3284493691900302606L;
     private static final Logger log = getLogger(CrudServlet.class);
     private static String LIST_OF_MEAL = "meals.jsp";
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
     private MealDAO dao;
 
@@ -64,9 +65,6 @@ public class CrudServlet extends HttpServlet {
         log.debug("CrudServlet doPost");
 
         try {
-            //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
             LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("date"), formatter);
             String description = request.getParameter("description");
             int calories = Integer.parseInt(request.getParameter("calories"));

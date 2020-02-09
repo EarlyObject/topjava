@@ -46,16 +46,11 @@ public class MealServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       // log.debug("MealServlet doGet");
+        log.debug("MealServlet doGet");
 
         List<MealTo> listToDisplay = listOfMeal.convertToMealTo();
 
         request.setAttribute("meals", listToDisplay);
         request.getRequestDispatcher("meals.jsp").forward(request, response);
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        log.debug("MealServlet doPost");
     }
 }
