@@ -6,7 +6,6 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<a href="crud.jsp">CRUD</a>
 
 
 <hr>

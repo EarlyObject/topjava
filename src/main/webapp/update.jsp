@@ -6,7 +6,7 @@
 <html>
 <head>
 
-    <title>Добавить блюдо</title>
+        <title>ИЗМЕНИТЬ БЛЮДО</title>
 </head>
 
 
@@ -16,26 +16,23 @@
     <a id="meals-link" href="meals.jsp">Моя еда</a>
 
 </header>
-<hr>
 
 <body bgcolor="#F0F8FF">
-<%--<script>
-    $(function() {
-        $('input[name=dob]').datepicker();
-    });
-</script>--%>
 
+"meal"
 
-<form method="POST" action="CrudServlet" name="frmAddMeal">
-    Date : <input type="datetime-local" name="date"
-                     value="<c:out value="${meal.date}" />" /> <br />
-    Description : <input type="text" name="description"
+<form method="UPDATE" action='CrudServlet' name="frmAddMeal">
+    Date : <input type="date" name="date"
+                  value="<c:out value="${meal.dateTime}" />" /> <br />
+    Description : <input
+        type="text" name="description"
         value="<c:out value="${meal.description}" />" /> <br />
-    Calories : <input type="text" name="calories"
+    Calories : <input
+        type="text" name="calories"
         value="<c:out value="${meal.calories}" />" /> <br />
 
     <input
-        type="submit" value="Submit" />
+            type="submit" value="Submit" />
 </form>
 
 

@@ -53,8 +53,8 @@ public class ListStorage implements Storage {
     }
 
     public List<MealTo> convertToMealTo() {
-        List<Meal> meals = new ArrayList<>(storage);
-        List<MealTo> returnValue = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
+    //    List<Meal> meals = new ArrayList<>(storage);
+        List<MealTo> returnValue = MealsUtil.filteredByStreams(storage, LocalTime.MIN, LocalTime.MAX, 2000);
         return returnValue;
     }
 

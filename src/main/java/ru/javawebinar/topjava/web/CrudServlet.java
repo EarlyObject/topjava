@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javawebinar.topjava.web.MealServlet.listOfMeal;
 
 @WebServlet("/CrudServlet")
 public class CrudServlet extends HttpServlet {
@@ -23,6 +23,8 @@ public class CrudServlet extends HttpServlet {
 
     private static String INSERT_OR_EDIT = "crud.jsp";
     private static String LIST_OF_MEAL = "meals.jsp";
+    private static String UPDATE_MEAL = "update.jsp";
+
     private MealDAO dao;
 
     public CrudServlet() {
@@ -47,7 +49,7 @@ public class CrudServlet extends HttpServlet {
         } else if (action.equalsIgnoreCase("listOfMeals")) {
             forward = LIST_OF_MEAL;
             request.setAttribute("meals", dao.getAllMeal());
-        } else {
+        } else  { ;
             forward = INSERT_OR_EDIT;
         }
 
@@ -61,13 +63,26 @@ public class CrudServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        //!!!! здесь будет ошибка ..pattern="yyyy-MM-dd HH:mm"
+
         try {
-            LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("date"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("date"), formatter);
             String description = request.getParameter("description");
             Integer calories = Integer.parseInt(request.getParameter("calories"));
-            Meal meal = new Meal(localDateTime, description, calories);
-            dao.addMeal(meal);
+            String mealId = request.getParameter("mealId");
+
+
+            if (mealId == null) {
+                Meal meal = new Meal(localDateTime, description, calories);
+                dao.addMeal(meal);
+            } else {
+                Meal meal = dao.getMealById(Integer.parseInt(mealId));
+                meal.setDateTime(localDateTime);
+                meal.setCalories(calories);
+                meal.setDescription(description);
+                dao.updateMeal(meal);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

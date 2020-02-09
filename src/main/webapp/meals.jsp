@@ -98,7 +98,6 @@
             <option value="">24:00</option>
         </select>
 
-
     </form>
 
 </section>
@@ -127,6 +126,7 @@
         <th>Калории</th>
     </tr>
     </thead>
+
     <tbody>
     <c:forEach var="meal" items="${meals}">
         <tr style="${meal.isExcess()==true ? "color: red" :  "color: green"}">

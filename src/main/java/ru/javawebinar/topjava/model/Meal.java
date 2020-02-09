@@ -8,9 +8,9 @@ import java.util.Objects;
 public class Meal {
     private static volatile Integer counter = 0;
 
-    private final LocalDateTime dateTime;
-    private final String description;
-    private final int calories;
+    private LocalDateTime dateTime;
+    private String description;
+    private int calories;
     private final Integer id;
 
 
@@ -44,5 +44,17 @@ public class Meal {
 
     public Integer getId() {
         return id;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 }
