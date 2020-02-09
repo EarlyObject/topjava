@@ -45,6 +45,7 @@ public class CrudServlet extends HttpServlet {
             forward = INSERT_OR_EDIT;
             Integer mealId = Integer.parseInt(request.getParameter("mealId"));
             Meal meal = dao.getMealById(mealId);
+            dao.deleteMeal(mealId);
             request.setAttribute("mealId", mealId);
             request.setAttribute("meal", meal);
         } else if (action.equalsIgnoreCase("listOfMeals")) {
