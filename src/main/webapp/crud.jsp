@@ -23,24 +23,23 @@
 </header>
 <hr>
 
-<body bgcolor="#F0F8FF">
+<body>
 
 
 <form method="POST" action="CrudServlet" name="frmAddMeal">
 
     <script>
         $(function(){
-            // Find any date inputs and override their functionality
             $('input[type="datetime-local"]').datepicker({ dateFormat: "yy-mm-dd'T'hh:mm"});
         });
     </script>
 
     Date : <input type="datetime-local" id="datepicker" name="date"
-                     value="<c:out value="${meal.date}" />" /> <br />
+                  value="<c:out value="${meal.getDateTime()}" />" /> <br />
     Description : <input type="text" name="description"
         value="<c:out value="${meal.getDescription()}" />" /> <br />
     Calories : <input type="text" name="calories"
-        value="<c:out value="${meal.calories}" />" /> <br />
+        value="<c:out  value="${meal.getCalories()}"/>" /><br />
 
     <input
         type="submit" value="Submit" />

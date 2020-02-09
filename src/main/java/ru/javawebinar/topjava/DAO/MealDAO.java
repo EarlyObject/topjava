@@ -22,11 +22,7 @@ public class MealDAO {
     }
 
     public List<MealTo> getAllMeal() {
-      //  List<Meal> meals = listOfMeal.getAll();
-        List<MealTo> meals = listOfMeal.convertToMealTo();
-
-
-        return meals;
+        return listOfMeal.convertToMealTo();
     }
 
     public Meal getMealById(Integer mealId) {

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,13 +42,11 @@ public class MealServlet extends HttpServlet {
         );
 
         listOfMeal.addAll(meals);
-
     }
-
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+       // log.debug("MealServlet doGet");
 
         List<MealTo> listToDisplay = listOfMeal.convertToMealTo();
 
@@ -59,5 +56,6 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        log.debug("MealServlet doPost");
     }
 }

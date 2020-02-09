@@ -20,7 +20,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class CrudServlet extends HttpServlet {
     private static final long serialVersionUID = 3284493691900302606L;
     private static final Logger log = getLogger(CrudServlet.class);
-    private static String INSERT_OR_EDIT = "crud.jsp";
     private static String LIST_OF_MEAL = "meals.jsp";
 
     private MealDAO dao;
@@ -31,9 +30,12 @@ public class CrudServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String forward = "";
+        log.debug("CrudServlet doGet");
+
+        String forward;
         String action = request.getParameter("action");
 
+        String INSERT_OR_EDIT = "crud.jsp";
         if (action.equalsIgnoreCase("delete")) {
             Integer mealId = Integer.parseInt(request.getParameter("mealId"));
             dao.deleteMeal(mealId);
@@ -48,7 +50,7 @@ public class CrudServlet extends HttpServlet {
         } else if (action.equalsIgnoreCase("listOfMeals")) {
             forward = LIST_OF_MEAL;
             request.setAttribute("meals", dao.getAllMeal());
-        } else  { ;
+        } else  {
             forward = INSERT_OR_EDIT;
         }
 
@@ -58,12 +60,13 @@ public class CrudServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("CrudServlet doPost");
 
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("date"), formatter);
             String description = request.getParameter("description");
-            Integer calories = Integer.parseInt(request.getParameter("calories"));
+            int calories = Integer.parseInt(request.getParameter("calories"));
             String mealId = request.getParameter("mealId");
 
             if (mealId == null) {

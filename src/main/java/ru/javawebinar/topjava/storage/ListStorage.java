@@ -7,9 +7,10 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ListStorage implements Storage {
-    protected final List<Meal> storage = new ArrayList<>();
+    protected final List<Meal> storage = new CopyOnWriteArrayList<>();
 
     public ListStorage() {
     }
@@ -53,9 +54,7 @@ public class ListStorage implements Storage {
     }
 
     public List<MealTo> convertToMealTo() {
-    //    List<Meal> meals = new ArrayList<>(storage);
-        List<MealTo> returnValue = MealsUtil.filteredByStreams(storage, LocalTime.MIN, LocalTime.MAX, 2000);
-        return returnValue;
+        return MealsUtil.filteredByStreams(storage, LocalTime.MIN, LocalTime.MAX, 2000);
     }
 
     public void addAll(List<Meal> list) {

@@ -17,7 +17,7 @@ public class Meal {
     public Meal(LocalDateTime dateTime, String description, int calories) {
         this.dateTime = Objects.requireNonNull(dateTime);
         this.description = Objects.requireNonNull(description);
-        this.calories = Objects.requireNonNull(calories);
+        this.calories = calories;
         counter += 1;
         this.id = counter;
     }
