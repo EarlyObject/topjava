@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.DAO.MealDAO;
 import ru.javawebinar.topjava.model.Meal;
 
 import javax.servlet.RequestDispatcher;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javawebinar.topjava.web.MealServlet.listOfMeal;
 
 @WebServlet("/CrudServlet")
 public class CrudServlet extends HttpServlet {
@@ -23,11 +23,7 @@ public class CrudServlet extends HttpServlet {
     private static String LIST_OF_MEAL = "meals.jsp";
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
-    private MealDAO dao;
 
-    public CrudServlet() {
-        this.dao = new MealDAO();
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,19 +35,19 @@ public class CrudServlet extends HttpServlet {
         String INSERT_OR_EDIT = "crud.jsp";
         if (action.equalsIgnoreCase("delete")) {
             Integer mealId = Integer.parseInt(request.getParameter("mealId"));
-            dao.deleteMeal(mealId);
+            listOfMeal.delete(mealId);
             forward = LIST_OF_MEAL;
-            request.setAttribute("meals", dao.getAllMeal());
+            request.setAttribute("meals", listOfMeal.convertToMealTo());
         } else if (action.equalsIgnoreCase("edit"))  {
             forward = INSERT_OR_EDIT;
             Integer mealId = Integer.parseInt(request.getParameter("mealId"));
-            Meal meal = dao.getMealById(mealId);
-            dao.deleteMeal(mealId);
+            Meal meal = listOfMeal.get(mealId);
+            listOfMeal.delete(mealId);
             request.setAttribute("mealId", mealId);
             request.setAttribute("meal", meal);
         } else if (action.equalsIgnoreCase("listOfMeals")) {
             forward = LIST_OF_MEAL;
-            request.setAttribute("meals", dao.getAllMeal());
+            request.setAttribute("meals", listOfMeal.convertToMealTo());
         } else  {
             forward = INSERT_OR_EDIT;
         }
@@ -72,13 +68,13 @@ public class CrudServlet extends HttpServlet {
 
             if (mealId == null) {
                 Meal meal = new Meal(localDateTime, description, calories);
-                dao.addMeal(meal);
+                listOfMeal.save(meal);
             } else {
-                Meal meal = dao.getMealById(Integer.parseInt(mealId));
+                Meal meal = listOfMeal.get(Integer.parseInt(mealId));
                 meal.setDateTime(localDateTime);
                 meal.setCalories(calories);
                 meal.setDescription(description);
-                dao.updateMeal(meal);
+                listOfMeal.update(meal);
             }
 
         } catch (Exception e) {
@@ -86,7 +82,7 @@ public class CrudServlet extends HttpServlet {
         }
 
         RequestDispatcher view = request.getRequestDispatcher(LIST_OF_MEAL);
-        request.setAttribute("meals", dao.getAllMeal());
+        request.setAttribute("meals", listOfMeal.convertToMealTo());
         view.forward(request, response);
     }
 }
