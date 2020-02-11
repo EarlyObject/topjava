@@ -3,8 +3,8 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.storage.MapStorage;
-import ru.javawebinar.topjava.util.MealCounter;
+import ru.javawebinar.topjava.storage.MealStorage;
+import ru.javawebinar.topjava.storage.MealStorageMap;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.RequestDispatcher;
@@ -24,19 +24,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final long serialVersionUID = -3757980620300353646L;
     private static final Logger log = getLogger(MealServlet.class);
-    private static MapStorage storage = new MapStorage();
+    private static MealStorage mealStorage;
 
     public void init() throws ServletException {
-    }
-
-    static {
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
-        storage.save(MealCounter.getMealObject(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
+        mealStorage = new MealStorageMap();
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
+        mealStorage.save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -46,35 +44,30 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        List<Meal> meals = storage.getAll();
+        List<Meal> meals = mealStorage.getAll();
         List<MealTo> listToDisplay = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
 
-        String forward;
         String action = request.getParameter("action");
-        String insertOrEdit = "meals.jsp";
-
+        String forward;
         String listOfMealView = "meals.jsp";
+        String insertOrEdit = "saveOrUpdate.jsp";
+
         switch (action == null ? "" : action) {
-            case "list":
-                request.setAttribute("meals", listToDisplay);
+
             case "delete":
-                Integer mealId = Integer.parseInt(request.getParameter("mealId"));
-                Meal meal = storage.get(mealId);
-                storage.delete(meal);
+                int mealId = Integer.parseInt(request.getParameter("mealId"));
+                mealStorage.delete(mealId);
                 response.sendRedirect("meals");
                 return;
             case "edit":
                 forward = insertOrEdit;
                 mealId = Integer.parseInt(request.getParameter("mealId"));
-                meal = storage.get(mealId);
-                storage.delete(meal);
-                request.setAttribute("mealId", mealId);
+                Meal meal = mealStorage.get(mealId);
                 request.setAttribute("meal", meal);
+                request.setAttribute("mealId", mealId);
                 break;
             case "insert":
                 forward = insertOrEdit;
-                mealId = null;
-                request.setAttribute("mealId", mealId);
                 break;
             default:
                 forward = listOfMealView;
@@ -98,17 +91,12 @@ public class MealServlet extends HttpServlet {
         int calories = Integer.parseInt(request.getParameter("calories"));
         String mealId = request.getParameter("mealId");
 
+        Meal meal = new Meal(localDateTime, description, calories);
         if (mealId == null) {
-            Meal meal = MealCounter.getMealObject(localDateTime, description, calories);
-            storage.save(meal);
+            mealStorage.save(meal);
         } else {
-            Meal meal = storage.get(Integer.parseInt(mealId));
-            meal.setDateTime(localDateTime);
-            meal.setCalories(calories);
-            meal.setDescription(description);
-            storage.update(meal);
+            mealStorage.update(Integer.parseInt(mealId), meal);
         }
-
         response.sendRedirect("meals");
     }
 }

@@ -53,41 +53,19 @@
 
     <tbody>
     <c:forEach var="meal" items="${meals}">
-        <tr style="${meal.isExcess() ? "color: red" :  "color: green"}">
-            <td><fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
+        <tr style="${meal.excess ? "color: red" :  "color: green"}">
+            <td><fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
-            <td>${meal.getDescription()}</td>
-            <td>${meal.getCalories()}</td>
-            <td><a href="meals?action=edit&mealId=${meal.getId()}">Update</a></td>
-            <td><a href="meals?action=delete&mealId=${meal.getId()}">Delete</a></td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&mealId=${meal.id}">Update</a></td>
+            <td><a href="meals?action=delete&mealId=${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
 <p><a href="meals?action=insert">Add Meal</a></p>
 <hr>
-
-<form method="POST" action="meals" name="editForm">
-
-    <script>
-        $(function () {
-            $("#datetime").datetimepicker(
-            );
-        });
-    </script>
-
-    Дата: <input id="datetime" name="date" type="text"
-                 value="<fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate"/><fmt:formatDate pattern="yyyy/MM/dd HH:mm" value="${parsedDate}"/>"/>
-    <br/>
-    Описание: <input type="text" name="description"
-                     value="<c:out value="${meal.getDescription()}" />"/>
-    <br/>
-    Калории: <input type="text" name="calories"
-                    value="<c:out  value="${meal.getCalories()}"/>"/>
-    <br/>
-
-    <input type="submit" value="Submit"/>
-</form>
 
 <footer id="main-footer">
     <p>

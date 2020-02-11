@@ -14,9 +14,6 @@ public class UserServlet extends HttpServlet {
     private static final long serialVersionUID = 1905829153396099766L;
     private static final Logger log = getLogger(UserServlet.class);
 
-    public void init() throws ServletException {
-    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("redirect to users");
