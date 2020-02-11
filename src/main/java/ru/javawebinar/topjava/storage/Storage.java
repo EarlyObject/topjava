@@ -11,11 +11,7 @@ public interface Storage {
 
     void update(Meal meal);
 
-    void delete(Integer mealId);
-
-    int size();
-
-    void clear();
+    void delete(Meal meal);
 
     List<Meal> getAll();
 }

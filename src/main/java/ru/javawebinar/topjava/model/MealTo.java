@@ -7,25 +7,18 @@ public class MealTo {
     private final String description;
     private final int calories;
     private final boolean excess;
-    private volatile Integer id;
-
+    private final Integer id;
 
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess, Integer id) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
-        this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "MealTo{" +
-                "dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
+    public Integer getId() {
+        return id;
     }
 
     public LocalDateTime getDateTime() {
@@ -44,11 +37,14 @@ public class MealTo {
         return excess;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public synchronized void setId(Integer id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "MealTo{" +
+                "dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", excess=" + excess +
+                ", id=" + id +
+                '}';
     }
 }

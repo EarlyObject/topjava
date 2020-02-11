@@ -38,88 +38,7 @@
     <h2>Моя еда</h2>
     <a id="user-profile-link" href="users.jsp">User профиль</a>
 </header>
-<hr>
-<section>
-    <form>
-        <div>
-            <label>От даты</label>
-            <input type="date" name="Дата" placeholder="01.01.2019">
-        </div>
-        <label>До даты</label>
-        <input type="date" name="до даты" placeholder="31.12.2020">
 
-
-        <label>От времени</label>
-        <select name="время">
-            <option value="">01:00</option>
-            <option value="">02:00</option>
-            <option value="">03:00</option>
-            <option value="">04:00</option>
-            <option value="">05:00</option>
-            <option value="">06:00</option>
-            <option value="">07:00</option>
-            <option value="">08:00</option>
-            <option value="">09:00</option>
-            <option value="">10:00</option>
-            <option value="">11:00</option>
-            <option value="">12:00</option>
-            <option value="">13:00</option>
-            <option value="">14:00</option>
-            <option value="">15:00</option>
-            <option value="">16:00</option>
-            <option value="">17:00</option>
-            <option value="">18:00</option>
-            <option value="">19:00</option>
-            <option value="">20:00</option>
-            <option value="">21:00</option>
-            <option value="">22:00</option>
-            <option value="">23:00</option>
-        </select>
-        <label>До времени</label>
-        <select name="время">
-            <option value="">01:00</option>
-            <option value="">02:00</option>
-            <option value="">03:00</option>
-            <option value="">04:00</option>
-            <option value="">05:00</option>
-            <option value="">06:00</option>
-            <option value="">07:00</option>
-            <option value="">08:00</option>
-            <option value="">09:00</option>
-            <option value="">10:00</option>
-            <option value="">11:00</option>
-            <option value="">12:00</option>
-            <option value="">13:00</option>
-            <option value="">14:00</option>
-            <option value="">15:00</option>
-            <option value="">16:00</option>
-            <option value="">17:00</option>
-            <option value="">18:00</option>
-            <option value="">19:00</option>
-            <option value="">20:00</option>
-            <option value="">21:00</option>
-            <option value="">22:00</option>
-            <option value="">23:00</option>
-            <option value="">24:00</option>
-        </select>
-
-    </form>
-
-</section>
-
-
-<hr>
-<button click="">Отменить</button>
-<button click="">Отфильтровать</button>
-
-<br>
-<button click="">+Добавить</button>
-<br>
-
-<form action="" method="">
-    <label>Искать</label>
-    <input type="text">
-</form>
 <br>
 <br>
 
@@ -134,19 +53,42 @@
 
     <tbody>
     <c:forEach var="meal" items="${meals}">
-        <tr style="${meal.isExcess()==true ? "color: red" :  "color: green"}">
+        <tr style="${meal.isExcess() ? "color: red" :  "color: green"}">
             <td><fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedEmpDate"/>
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
             <td>${meal.getDescription()}</td>
             <td>${meal.getCalories()}</td>
-            <td><a href="CrudServlet?action=edit&mealId=${meal.getId()}">Update</a></td>
-            <td><a href="CrudServlet?action=delete&mealId=${meal.getId()}">Delete</a></td>
+            <td><a href="meals?action=edit&mealId=${meal.getId()}">Update</a></td>
+            <td><a href="meals?action=delete&mealId=${meal.getId()}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-<p><a href="CrudServlet?action=insert">Add Meal</a></p>
+<p><a href="meals?action=insert">Add Meal</a></p>
 <hr>
+
+<form method="POST" action="meals" name="editForm">
+
+    <script>
+        $(function () {
+            $("#datetime").datetimepicker(
+            );
+        });
+    </script>
+
+    Дата: <input id="datetime" name="date" type="text"
+                 value="<fmt:parseDate value="${meal.getDateTime()}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate"/><fmt:formatDate pattern="yyyy/MM/dd HH:mm" value="${parsedDate}"/>"/>
+    <br/>
+    Описание: <input type="text" name="description"
+                     value="<c:out value="${meal.getDescription()}" />"/>
+    <br/>
+    Калории: <input type="text" name="calories"
+                    value="<c:out  value="${meal.getCalories()}"/>"/>
+    <br/>
+
+    <input type="submit" value="Submit"/>
+</form>
+
 <footer id="main-footer">
     <p>
         Приложение стажировки <a href="https://github.com/JavaOPs/topjava" target="_blank">Spring 5/JPA Enterprise
