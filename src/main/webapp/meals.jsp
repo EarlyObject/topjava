@@ -11,29 +11,10 @@
 <html>
 <head>
     <title>Подсчет калорий</title>
-    <style type="text/css">
-        #main-header {
-            text-align: left;
-            background-color: dimgrey;
-            color: white;
-            padding: 5px;
-        }
-
-        #user-profile-link {
-            text-align: right;
-        }
-
-        #main-footer {
-            text-align: left;
-            background-color: white;
-            color: black;
-            padding: 5px;
-        }
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 
-<body bgcolor="#F0F8FF">
+<body>
 <header id="main-header">
     <h2>Моя еда</h2>
     <a id="user-profile-link" href="users.jsp">User профиль</a>
@@ -58,13 +39,13 @@
                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedEmpDate}"/></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td><a href="meals?action=edit&mealId=${meal.id}">Update</a></td>
-            <td><a href="meals?action=delete&mealId=${meal.id}">Delete</a></td>
+            <td><a href="meals?action=edit&mealId=${meal.id}">Изменить</a></td>
+            <td><a href="meals?action=delete&mealId=${meal.id}">Удалить</a></td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-<p><a href="meals?action=insert">Add Meal</a></p>
+<p><a href="meals?action=insert">Добавить</a></p>
 <hr>
 
 <footer id="main-footer">

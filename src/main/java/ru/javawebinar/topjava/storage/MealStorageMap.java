@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealStorageMap implements MealStorage {
     protected final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
-    private static AtomicInteger counter = new AtomicInteger();
+    private AtomicInteger counter = new AtomicInteger();
 
     @Override
     public void save(Meal meal) {
-        meal.setId(getCounter().intValue());
+        meal.setId(getCounter());
         storage.put(meal.getId(), meal);
     }
 
@@ -40,8 +39,7 @@ public class MealStorageMap implements MealStorage {
         return new ArrayList<>(storage.values());
     }
 
-    private static AtomicInteger getCounter() {
-        counter.incrementAndGet();
-        return counter;
+    private int getCounter() {
+       return counter.incrementAndGet();
     }
 }

@@ -1,0 +1,26 @@
+h1 {
+    color: black;
+}
+
+body{
+background-color: whitesmoke;
+}
+
+#main-header {
+    text-align: left;
+    background-color: dimgrey;
+    color: white;
+    padding: 5px;
+}
+
+#user-profile-link {
+    text-align: right;
+}
+
+#main-footer {
+    text-align: left;
+    background-color: white;
+    color: black;
+    padding: 5px;
+}
+

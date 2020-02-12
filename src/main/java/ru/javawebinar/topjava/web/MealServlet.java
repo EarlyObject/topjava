@@ -24,7 +24,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
     private static final long serialVersionUID = -3757980620300353646L;
     private static final Logger log = getLogger(MealServlet.class);
-    private static MealStorage mealStorage;
+    private MealStorage mealStorage;
 
     public void init() throws ServletException {
         mealStorage = new MealStorageMap();
@@ -78,7 +78,7 @@ public class MealServlet extends HttpServlet {
         view.forward(request, response);
     }
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -92,7 +92,7 @@ public class MealServlet extends HttpServlet {
         String mealId = request.getParameter("mealId");
 
         Meal meal = new Meal(localDateTime, description, calories);
-        if (mealId == null) {
+        if (mealId == "") {
             mealStorage.save(meal);
         } else {
             mealStorage.update(Integer.parseInt(mealId), meal);

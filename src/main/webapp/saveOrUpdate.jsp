@@ -11,11 +11,12 @@
 <html>
 <head>
     <title>Ваше блюдо</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 
 <h1>Введите блюдо</h1>
-<form method="POST" action="meals" name="editForm"><table style="with: 50%"></table>
+<form method="POST" action="meals" name="editForm">
 
     <script>
         $(function () {
@@ -34,7 +35,7 @@
 
     <input type="hidden" name="mealId" value="${meal.id}">
 
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Сохранить"/>
 </form>
 
 </body>
