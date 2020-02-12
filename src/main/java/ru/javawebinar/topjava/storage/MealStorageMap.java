@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealStorageMap implements MealStorage {
-    protected final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+    private final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger();
 
     @Override
@@ -24,9 +24,8 @@ public class MealStorageMap implements MealStorage {
     }
 
     @Override
-    public void update(int mealId, Meal meal) {
-        meal.setId(mealId);
-        storage.replace(mealId, meal);
+    public void update(Meal meal) {
+        storage.replace(meal.getId(), meal);
     }
 
     @Override
