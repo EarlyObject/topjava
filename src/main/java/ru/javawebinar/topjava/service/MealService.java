@@ -3,7 +3,10 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -16,7 +19,8 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(Meal meal, int userId) {
+    public Meal create(Meal meal, int userId) throws NotFoundException {
+        assert repository.save(meal, userId) != null : "!!!";
         return repository.save(meal, userId);
     }
 
@@ -36,20 +40,7 @@ public class MealService {
         checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    public List<Meal> filter(int userId, String dFrom, String dTo, String tFrom, String tTo) {
-        return repository.filter(userId, dFrom, dTo, tFrom, tTo);
+    public Collection<Meal> getAllFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        return repository.getAllFilteredByDate(userId, startDate, endDate);
     }
-  /*  public List<Meal> getAllFilteredByDate (LocalDate start, LocalDate end){
-        return getAll()
-                .stream()
-                .filter(n -> (DateTimeUtil.isBetweenDate(n.getDate(), start, end)))
-                .collect(Collectors.toList());
-    }
-
-    public List<Meal> getAllFilteredByTime (LocalTime start, LocalTime end){
-        return getAll()
-                .stream()
-                .filter(n -> (DateTimeUtil.isBetweenInclusive(n.getTime(), start, end)))
-                .collect(Collectors.toList());
-    }*/
 }

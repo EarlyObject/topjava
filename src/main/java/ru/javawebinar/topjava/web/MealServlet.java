@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -13,8 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -52,10 +58,14 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        String dFrom = request.getParameter("dateFrom");
-        String dTo = request.getParameter("dateTo");
-        String tFrom = request.getParameter("timeFrom");
-        String tTo = request.getParameter("timeTo");
+
+        Enumeration enumeration = request.getParameterNames();
+        Map<String, Object> modelMap = new HashMap<>();
+        while (enumeration.hasMoreElements()) {
+            String parameterName = (String) enumeration.nextElement();
+            modelMap.put(parameterName, request.getParameter(parameterName));
+        }
+
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -66,7 +76,12 @@ public class MealServlet extends HttpServlet {
                 break;
             case "filter":
                 log.info("filter");
-                request.setAttribute("meals", mealRestController.filter(dFrom, dTo, tFrom, tTo));
+                LocalDate dateFrom = request.getParameter("dateFrom").equals("") ? null : LocalDate.parse(request.getParameter("dateFrom"), DateTimeUtil.DATEFORMATTER);
+                LocalDate dateTo = request.getParameter("dateTo").equals("") ? null : LocalDate.parse(request.getParameter("dateTo"), DateTimeUtil.DATEFORMATTER);
+                LocalTime timeFrom = request.getParameter("timeFrom").equals("") ? null : LocalTime.parse(request.getParameter("timeFrom"));
+                LocalTime timeTo = request.getParameter("timeTo").equals("") ? null : LocalTime.parse(request.getParameter("timeTo"));
+
+                request.setAttribute("meals", mealRestController.filter(dateFrom, dateTo, timeFrom, timeTo));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "create":
