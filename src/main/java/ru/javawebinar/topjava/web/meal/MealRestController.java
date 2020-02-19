@@ -6,14 +6,12 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.time.LocalTime.MAX;
 import static java.time.LocalTime.MIN;
@@ -63,9 +61,9 @@ public class MealRestController {
         LocalDate endDate = dateTo != null ? dateTo : LocalDate.MAX;
         LocalTime startTime = timeFrom != null ? timeFrom : MIN;
         LocalTime endTime = timeTo != null ? timeTo : MAX;
-        return MealsUtil.getTos(service.getAllFilteredByDate(authUserId(), startDate, endDate), SecurityUtil.authUserCaloriesPerDay())
-                .stream()
-                .filter(n -> DateTimeUtil.isBetween(n.getDateTime().toLocalTime(), startTime, endTime))
-                .collect(Collectors.toList());
+        return MealsUtil.getFilteredTos(service.getAllFilteredByDate((authUserId()), startDate, endDate),
+                SecurityUtil.authUserCaloriesPerDay(),
+                startTime,
+                endTime);
     }
 }

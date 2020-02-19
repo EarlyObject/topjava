@@ -67,6 +67,8 @@ public class MealServlet extends HttpServlet {
         }
 
 
+
+
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);

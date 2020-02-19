@@ -20,7 +20,6 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) throws NotFoundException {
-        assert repository.save(meal, userId) != null : "!!!";
         return repository.save(meal, userId);
     }
 
