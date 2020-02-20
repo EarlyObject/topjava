@@ -47,7 +47,6 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
-        <th>userID</th>
         <th></th>
         <th></th>
     </tr>
@@ -63,7 +62,6 @@
             </td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td>${meal.userId}</td>
             <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
             <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
         </tr>
