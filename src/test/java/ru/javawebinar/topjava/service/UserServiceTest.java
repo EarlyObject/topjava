@@ -19,6 +19,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/jdbc-repo.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)

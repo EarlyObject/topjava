@@ -22,6 +22,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/jdbc-repo.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -60,7 +61,7 @@ public class MealServiceTest {
     @Test
     public void getBetweenHalfOpen() {
         List<Meal> list = service.getBetweenHalfOpen(LocalDate.of(2020, 1, 29), LocalDate.of(2020, 1, 30), USER_ID);
-        List<Meal> expected = Arrays.asList(MEAL_4, MEAL_3, MEAL_2, MEAL_1);
+        List<Meal> expected = Arrays.asList(MEAL_3, MEAL_2, MEAL_1);
         assertMatch(list, expected);
     }
 
