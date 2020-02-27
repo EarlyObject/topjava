@@ -1,4 +1,5 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/248ffd68076b40f9a43337a4c87f86cf)](https://www.codacy.com/manual/EarlyObject/topjava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EarlyObject/topjava&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.com/travis-ci/travis-web.svg?branch=master)](https://travis-ci.com/travis-ci/travis-web)
 
 Java Enterprise Online Project 
 ===============================
