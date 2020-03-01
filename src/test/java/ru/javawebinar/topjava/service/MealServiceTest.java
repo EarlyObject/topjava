@@ -1,10 +1,15 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -34,48 +39,49 @@ public class MealServiceTest {
     @Autowired
     private MealRepository repository;
 
+    static final Logger LOGGER = LoggerFactory.getLogger(MealServiceTest.class);
+
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
+    private static StringBuilder builder = new StringBuilder();
+
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
-        protected void succeeded(long nanos, Description description) {
-            System.out.println(description.getMethodName() + " succeeded, time taken " + nanos);
-        }
-
-        protected void failed(long nanos, Throwable e, Description description) {
-            System.out.println(description.getMethodName() + " failed, time taken " + nanos);
-        }
-
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            System.out.println(description.getMethodName() + " skipped, time taken " + nanos);
-        }
 
         protected void finished(long nanos, Description description) {
-            System.out.println(description.getMethodName() + " finished, time taken " + nanos);
+            String timing = description.getMethodName() + " finished, time taken " + nanos;
+            LOGGER.info(timing);
+            builder.append(timing)
+                    .append(System.lineSeparator());
         }
     };
 
+    @AfterClass
+    public static void logAllTimings() {
+        LOGGER.info(builder.toString());
+    }
+
     @Test
-    public void delete() throws Exception {
+    public void delete() {
         service.delete(MEAL1_ID, USER_ID);
         Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotFound() throws Exception {
+    @Test
+    public void deleteNotFound() {
+        thrown.expect(NotFoundException.class);
         service.delete(1, USER_ID);
-        thrown.expect(NotFoundException.class);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void deleteNotOwn() throws Exception {
-        service.delete(MEAL1_ID, ADMIN_ID);
-        thrown.expect(NotFoundException.class);
     }
 
     @Test
-    public void create() throws Exception {
+    public void deleteNotOwn() {
+        thrown.expect(NotFoundException.class);
+        service.delete(MEAL1_ID, ADMIN_ID);
+    }
+
+    @Test
+    public void create() {
         Meal newMeal = getCreated();
         Meal created = service.create(newMeal, USER_ID);
         Integer newId = created.getId();
@@ -85,43 +91,44 @@ public class MealServiceTest {
     }
 
     @Test
-    public void get() throws Exception {
+    public void get() {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         MEAL_MATCHER.assertMatch(actual, ADMIN_MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void getNotFound() throws Exception {
+    @Test
+    public void getNotFound() {
+        thrown.expect(NotFoundException.class);
         service.get(1, USER_ID);
-        thrown.expect(NotFoundException.class);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void getNotOwn() throws Exception {
-        service.get(MEAL1_ID, ADMIN_ID);
-        thrown.expect(NotFoundException.class);
     }
 
     @Test
-    public void update() throws Exception {
+    public void getNotOwn() {
+        thrown.expect(NotFoundException.class);
+        service.get(MEAL1_ID, ADMIN_ID);
+    }
+
+    @Test
+    public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void updateNotFound() throws Exception {
-        service.update(MEAL1, ADMIN_ID);
+    @Test
+    public void updateNotFound() {
         thrown.expect(NotFoundException.class);
+        service.update(MEAL1, ADMIN_ID);
+
     }
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll() {
         MEAL_MATCHER.assertMatch(service.getAll(USER_ID), MEALS);
     }
 
     @Test
-    public void getBetweenInclusive() throws Exception {
+    public void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
                 LocalDate.of(2020, Month.JANUARY, 30),
                 LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
@@ -129,7 +136,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getBetweenWithNullDates() throws Exception {
+    public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), MEALS);
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,40 +21,35 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        User ref = em.getReference(User.class, userId);
-        meal.setUser(ref);
         if (meal.isNew()) {
+            User ref = em.getReference(User.class, userId);
+            meal.setUser(ref);
             em.persist(meal);
             return meal;
         } else {
             if (get(meal.getId(), userId) != null) {
+                User ref = em.getReference(User.class, userId);
+                meal.setUser(ref);
                 return em.merge(meal);
-            } else {
-                throw new NotFoundException("Meal not found");
             }
+            return null;
         }
     }
 
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        User ref = em.getReference(User.class, userId);
-
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
-                .setParameter("user", ref)
+                .setParameter("userId", userId)
                 .executeUpdate() != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        User ref = em.getReference(User.class, userId);
         Meal meal = em.find(Meal.class, id);
         if (meal != null) {
-            if (meal.getUser() != ref) {
-                throw new NotFoundException("Meal not found");
-            }
-            return meal;
+            return meal.getUser().getId() == userId ? meal : null;
         }
         return null;
     }
@@ -63,22 +57,18 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<Meal> getAll(int userId) {
-        User ref = em.getReference(User.class, userId);
-
         return em.createNamedQuery(Meal.ALL_SORTED)
-                .setParameter(1, ref)
+                .setParameter("userId", userId)
                 .getResultList();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        User ref = em.getReference(User.class, userId);
-
         return em.createNamedQuery(Meal.BETWEEN_HALF_OPEN)
-                .setParameter(1, ref)
-                .setParameter(2, startDate)
-                .setParameter(3, endDate)
+                .setParameter("userId", userId)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
                 .getResultList();
     }
 }
