@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +34,28 @@ public class MealServiceTest {
     @Autowired
     private MealRepository repository;
 
+    @Rule
+    public final ExpectedException thrown = ExpectedException.none();
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        protected void succeeded(long nanos, Description description) {
+            System.out.println(description.getMethodName() + " succeeded, time taken " + nanos);
+        }
+
+        protected void failed(long nanos, Throwable e, Description description) {
+            System.out.println(description.getMethodName() + " failed, time taken " + nanos);
+        }
+
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            System.out.println(description.getMethodName() + " skipped, time taken " + nanos);
+        }
+
+        protected void finished(long nanos, Description description) {
+            System.out.println(description.getMethodName() + " finished, time taken " + nanos);
+        }
+    };
+
     @Test
     public void delete() throws Exception {
         service.delete(MEAL1_ID, USER_ID);
@@ -41,11 +65,13 @@ public class MealServiceTest {
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() throws Exception {
         service.delete(1, USER_ID);
+        thrown.expect(NotFoundException.class);
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteNotOwn() throws Exception {
         service.delete(MEAL1_ID, ADMIN_ID);
+        thrown.expect(NotFoundException.class);
     }
 
     @Test
@@ -67,11 +93,13 @@ public class MealServiceTest {
     @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
         service.get(1, USER_ID);
+        thrown.expect(NotFoundException.class);
     }
 
     @Test(expected = NotFoundException.class)
     public void getNotOwn() throws Exception {
         service.get(MEAL1_ID, ADMIN_ID);
+        thrown.expect(NotFoundException.class);
     }
 
     @Test
@@ -84,6 +112,7 @@ public class MealServiceTest {
     @Test(expected = NotFoundException.class)
     public void updateNotFound() throws Exception {
         service.update(MEAL1, ADMIN_ID);
+        thrown.expect(NotFoundException.class);
     }
 
     @Test
