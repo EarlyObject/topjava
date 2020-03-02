@@ -39,18 +39,17 @@ public class MealServiceTest {
     @Autowired
     private MealRepository repository;
 
-    static final Logger LOGGER = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MealServiceTest.class);
+    private static StringBuilder builder = new StringBuilder();
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
-
-    private static StringBuilder builder = new StringBuilder();
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
 
         protected void finished(long nanos, Description description) {
-            String timing = description.getMethodName() + " finished, time taken " + nanos;
+            String timing = String.format("%s%s%s%s%,d%s%s", "\t\u001B[36m",  "[" , description.getMethodName() , " test finished in ",   nanos, " ns]" ,  "\u001B[0m");
             LOGGER.info(timing);
             builder.append(timing)
                     .append(System.lineSeparator());
