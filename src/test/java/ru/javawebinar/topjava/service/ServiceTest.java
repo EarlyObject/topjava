@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -24,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class ServiceTestParent {
+public abstract class ServiceTest {
 
     private static final Logger log = getLogger("result");
     private static StringBuilder results = new StringBuilder();
@@ -39,6 +40,11 @@ public class ServiceTestParent {
             log.info(result + " ms\n");
         }
     };
+
+    @BeforeClass
+    public static void clearLog() {
+        results.setLength(0);
+    }
 
     @AfterClass
     public static void printResult() {

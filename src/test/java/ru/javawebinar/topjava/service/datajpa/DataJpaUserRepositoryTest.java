@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.service.datajpa;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -11,7 +12,7 @@ import static ru.javawebinar.topjava.MealTestData.MEALS;
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles("datajpa")
+@ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaUserRepositoryTest extends UserServiceTest {
 
     @Test

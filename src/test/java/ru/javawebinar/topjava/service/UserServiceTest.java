@@ -16,7 +16,7 @@ import java.util.List;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 
-public abstract class UserServiceTest extends ServiceTestParent {
+public abstract class UserServiceTest extends ServiceTest {
 
     @Autowired
     protected UserService service;
