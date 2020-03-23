@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
@@ -11,7 +12,7 @@
 
 <hr/>
 <h2><spring:message code="meal.title"/></h2>
-<form method="get" action="meals">
+<form method="get" action="<c:url value='meals/filter'/>">
     <input type="hidden" name="action" value="filter">
     <dl>
         <dt><spring:message code="meal.fromDate"/>:</dt>
@@ -29,12 +30,13 @@
         <dt><spring:message code="meal.toTime"/>:</dt>
         <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
     </dl>
+
     <button type="submit"><spring:message code="meal.filter"/></button>
+
 </form>
 <hr/>
 
-<a href="meals?action=create">
-    <button><spring:message code="meal.addMeal"/></button>
+<a href="<c:url value='meals/create'/>"><button><spring:message code="meal.addMeal"/></button>
 </a>
 
 
@@ -47,8 +49,8 @@
             <th><spring:message code="meal.date"/></th>
             <th><spring:message code="meal.description"/></th>
             <th><spring:message code="meal.calories"/></th>
-            <%--            <th></th>--%>
-            <%--            <th></th>--%>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <c:forEach items="${meals}" var="meal">
@@ -57,13 +59,11 @@
                 <td>${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}</td>
                 <td><c:out value="${meal.description}"/></td>
                 <td><c:out value="${meal.calories}"/></td>
-                <td><a href="meals?action=update&id=${meal.id}">
-                    <button><spring:message code="meal.update"/></button>
-                </a></td>
                 <td>
-                    <form action="<c:url value='meals/delete/${meal.id}'/>" method="post">
-                        <button><spring:message code="meal.delete"/></button>
-                    </form>
+                    <a href="meals/update?&id=${meal.id}"><button><spring:message code="meal.update"/></button></a>
+                </td>
+                <td>
+                    <form action="<c:url value='meals/delete/${meal.id}'/>" method="post"><button><spring:message code="meal.delete"/></button></form>
                 </td>
             </tr>
         </c:forEach>
@@ -72,4 +72,3 @@
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
-

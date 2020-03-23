@@ -1,41 +1,36 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
-@EnableTransactionManagement
 public class JdbcUserRepository implements UserRepository {
+    private static final Logger log = LoggerFactory.getLogger(JdbcUserRepository.class);
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertUser;
-    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    Validator validator = validatorFactory.getValidator();
 
     @Autowired
     public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -49,8 +44,14 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public User save(User user) {
-        validator.validate(user);
+    public User save(User user) throws ValidationException {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Set<ConstraintViolation<User>> violations = validatorFactory.getValidator().validate(user);
+        for (ConstraintViolation<User> violation : violations) {
+            log.info(violation.getMessage());
+            throw new ConstraintViolationException(violations);
+        }
+
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
@@ -75,7 +76,6 @@ public class JdbcUserRepository implements UserRepository {
                         ps.setString(1, roles.get(i).toString());
                         ps.setInt(2, userId);
                     }
-
                     public int getBatchSize() {
                         return roles.size();
                     }
@@ -92,8 +92,7 @@ public class JdbcUserRepository implements UserRepository {
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users where id = ?", ROW_MAPPER, id);
         User user = DataAccessUtils.singleResult(users);
-        validator.validate(user);
-        user.setRoles(new HashSet<>(roles(id)));
+        setRoles(user);
         return user;
     }
 
@@ -101,9 +100,7 @@ public class JdbcUserRepository implements UserRepository {
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         User user = DataAccessUtils.singleResult(jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email));
-        validator.validate(user);
-        user.setRoles(new HashSet<>(roles(user.getId())));
-
+        setRoles(user);
         return user;
     }
 
@@ -114,14 +111,11 @@ public class JdbcUserRepository implements UserRepository {
         return users;
     }
 
-    private List<Role> roles(int userId) {
-        return jdbcTemplate.query("SELECT * FROM user_roles WHERE user_id = ?", new RoleMapper(), userId);
-    }
-
-    private static final class RoleMapper implements RowMapper<Role> {
-        @Override
-        public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return Role.valueOf(rs.getString("role"));
+    private void setRoles(User user) {
+        if (user != null) {
+            user.setRoles(jdbcTemplate.query("SELECT * FROM user_roles WHERE user_id = ?",
+                    (rs, rowNum) -> Role.valueOf(rs.getString("role")),
+                    user.getId()));
         }
     }
 }

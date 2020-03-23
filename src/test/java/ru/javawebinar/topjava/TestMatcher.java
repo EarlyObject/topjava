@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava;
 
+import ru.javawebinar.topjava.model.Role;
+
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,4 +29,10 @@ public class TestMatcher<T> {
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
     }
+
+    public void assertMatch(Set<Role> roles, Set<Role> roles1) {
+        assertThat(roles).isEqualTo(roles1);
+    }
+
+
 }
