@@ -60,7 +60,7 @@
                 <td><c:out value="${meal.description}"/></td>
                 <td><c:out value="${meal.calories}"/></td>
                 <td>
-                    <a href="meals/update?&id=${meal.id}"><button><spring:message code="meal.update"/></button></a>
+                    <a href="meals/update/${meal.id}"><button><spring:message code="meal.update"/></button></a>
                 </td>
                 <td>
                     <form action="<c:url value='meals/delete/${meal.id}'/>" method="post"><button><spring:message code="meal.delete"/></button></form>

@@ -14,10 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.validation.*;
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
+import static ru.javawebinar.topjava.util.JdbcValidator.validate;
 
 @Repository
 @Transactional(readOnly = true)
@@ -27,8 +28,6 @@ public class JdbcMealRepository implements MealRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertMeal;
-    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    Validator validator = validatorFactory.getValidator();
 
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
@@ -42,12 +41,7 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) throws ValidationException {
-            Set<ConstraintViolation<Meal>> violations = validator.validate(meal);
-            for (ConstraintViolation<Meal> violation : violations) {
-                log.info(violation.getMessage());
-                throw new ConstraintViolationException(violations);
-            }
-//        validator.validate(meal);
+        validate(meal);
 
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
