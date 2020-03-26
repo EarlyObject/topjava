@@ -43,7 +43,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void create() {
         User newUser = getNew();
-        User created = service.create(newUser);
+        User created = service.create(new User(newUser));
         Integer newId = created.getId();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);
@@ -90,7 +90,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void update() {
         User updated = getUpdated();
-        service.update(updated);
+        service.update(new User(updated));
         USER_MATCHER.assertMatch(service.get(USER_ID), updated);
         USER_MATCHER.assertMatch(updated.getRoles(), Set.of(Role.ROLE_USER));
     }

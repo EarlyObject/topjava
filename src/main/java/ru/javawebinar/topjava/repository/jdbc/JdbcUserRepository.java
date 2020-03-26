@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -53,84 +54,101 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE users SET name=:name, email=:email, password=:password, " +
-                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
-            return null;
-        }
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
-        batchUpdate(new ArrayList<>(user.getRoles()), user.getId());
+            insertRoles(user);
+        } else {
+            if (namedParameterJdbcTemplate.update(
+                    "UPDATE users SET name=:name, email=:email, password=:password, " +
+                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
+                return null;
 
-        return user;
-    }
-
-    public int[] batchUpdate(List<Role> roles, int userId) {
-
-        return this.jdbcTemplate.batchUpdate(
-                "UPDATE user_roles SET role=? WHERE user_id=?",
-                new BatchPreparedStatementSetter() {
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setString(1, roles.get(i).toString());
-                        ps.setInt(2, userId);
-                    }
-                    public int getBatchSize() {
-                        return roles.size();
-                    }
-                });
-    }
-
-    @Override
-    @Transactional
-    public boolean delete(int id) {
-        return jdbcTemplate.update("DELETE FROM users WHERE  users.id =?", id) != 0;
-    }
-
-    @Override
-    public User get(int id) {
-        return setRoles(DataAccessUtils.singleResult(jdbcTemplate.query("SELECT * FROM users where id = ?", ROW_MAPPER, id)));
-    }
-
-    @Override
-    public User getByEmail(String email) {
-        return setRoles(DataAccessUtils.singleResult(jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email)));
-    }
-
-    @Override
-    public List<User> getAll() {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        Map<Integer, Set<Role>> rolesMap = jdbcTemplate.query("SELECT * FROM user_roles", new RoleMapExtractor());
-        for (User user : users) {
-            user.setRoles(rolesMap.get(user.getId()));
-        }
-        return users;
-    }
-
-    private User setRoles(User user) {
-        if (user != null) {
-            user.setRoles(jdbcTemplate.query("SELECT * FROM user_roles WHERE user_id = ?",
-                    (rs, rowNum) -> Role.valueOf(rs.getString("role")),
-                    user.getId()));
-        }
-        return user;
-    }
-
-    private static final class RoleMapExtractor implements ResultSetExtractor<Map<Integer, Set<Role>>> {
-        @Override
-        public Map<Integer, Set<Role>> extractData(ResultSet rs) throws SQLException {
-            Map<Integer, Set<Role>> rolesMap = new HashMap<>();
-            while (rs.next()) {
-                Integer id = Integer.parseInt(rs.getString("user_id"));
-                Role role = Role.valueOf(rs.getString("role"));
-                Set<Role> roles = rolesMap.get(id);
-                if (roles == null) {
-                    Set<Role> newRoles = EnumSet.noneOf(Role.class);
-                    newRoles.add(role);
-                    rolesMap.put(id, newRoles);
-                } else {
-                    roles.add(role);
-                }
             }
-            return rolesMap;
+            deleteRoles(user);
+            insertRoles(user);
+//            batchUpdate(new ArrayList<>(user.getRoles()), user.getId());
+        }
+        return user;
+    }
+
+    private void insertRoles(User u) {
+        Set<Role> roles = u.getRoles();
+        if (!CollectionUtils.isEmpty(roles)) {
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
+                    (ps, role) -> {
+                        ps.setInt(1, u.getId());
+                        ps.setString(2, role.name());
+                    });
         }
     }
-}
+        public int[] batchUpdate (List < Role > roles,int userId){
+
+            return this.jdbcTemplate.batchUpdate(
+                    "UPDATE user_roles SET role=? WHERE user_id=?",
+                    new BatchPreparedStatementSetter() {
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setString(1, roles.get(i).toString());
+                            ps.setInt(2, userId);
+                        }
+
+                        public int getBatchSize() {
+                            return roles.size();
+                        }
+                    });
+        }
+
+        @Override
+        @Transactional
+        public boolean delete ( int id){
+            return jdbcTemplate.update("DELETE FROM users WHERE  users.id =?", id) != 0;
+        }
+
+        @Override
+        public User get ( int id){
+            return setRoles(DataAccessUtils.singleResult(jdbcTemplate.query("SELECT * FROM users where id = ?", ROW_MAPPER, id)));
+        }
+
+        @Override
+        public User getByEmail (String email){
+            return setRoles(DataAccessUtils.singleResult(jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email)));
+        }
+
+        @Override
+        public List<User> getAll () {
+            List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+            Map<Integer, Set<Role>> rolesMap = jdbcTemplate.query("SELECT * FROM user_roles", new RoleMapExtractor());
+            for (User user : users) {
+                user.setRoles(rolesMap.get(user.getId()));
+            }
+            return users;
+        }
+
+        private User setRoles (User user){
+            if (user != null) {
+                user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_roles  WHERE user_id=?", Role.class, user.getId()));
+            }
+            return user;
+        }
+
+        private void deleteRoles (User user){
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        }
+
+        private static final class RoleMapExtractor implements ResultSetExtractor<Map<Integer, Set<Role>>> {
+            @Override
+            public Map<Integer, Set<Role>> extractData(ResultSet rs) throws SQLException {
+                Map<Integer, Set<Role>> rolesMap = new HashMap<>();
+                while (rs.next()) {
+                    Integer id = Integer.parseInt(rs.getString("user_id"));
+                    Role role = Role.valueOf(rs.getString("role"));
+                    Set<Role> roles = rolesMap.get(id);
+                    if (roles == null) {
+                        Set<Role> newRoles = EnumSet.noneOf(Role.class);
+                        newRoles.add(role);
+                        rolesMap.put(id, newRoles);
+                    } else {
+                        roles.add(role);
+                    }
+                }
+                return rolesMap;
+            }
+        }
+    }

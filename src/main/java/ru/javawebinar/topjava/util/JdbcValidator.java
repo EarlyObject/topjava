@@ -13,9 +13,6 @@ public  class JdbcValidator {
 
     public static <T> void validate(T object) {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
-        for (ConstraintViolation<T> violation : violations) {
-            log.info(violation.getMessage());
-        }
         if (!violations.isEmpty()) {
             violations.forEach(n->log.info(n.getMessage()));
 
