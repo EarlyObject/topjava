@@ -42,7 +42,7 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete" id="${meal.id}"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
@@ -63,7 +63,7 @@
 
                     <div class="form-group">
                         <label for="datetime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input type="date" class="form-control" id="datetime" name="datetime"
+                        <input type="datetime-local" class="form-control" id="datetime" name="datetime"
                                placeholder="<spring:message code="meal.dateTime"/>">
                     </div>
 

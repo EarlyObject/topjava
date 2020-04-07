@@ -2,7 +2,7 @@
 $(function () {
     makeEditable({
             ajaxUrl: "ajax/profile/meals/",
-            datatableApi: $("#datatable").content.DataTable({
+            datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
                 "columns": [
