@@ -26,8 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.util.StringUtils.isEmpty;
-import static ru.javawebinar.topjava.util.ValidationUtil.getErrorResponse;
-import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
+import static ru.javawebinar.topjava.util.ValidationUtil.*;
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
 @RestControllerAdvice(annotations = RestController.class)
@@ -64,7 +63,7 @@ public class ExceptionInfoHandler {
     @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public ErrorInfo requestDataError(HttpServletRequest req, Exception e) {
         BindingResult result = e instanceof BindException ? ((BindException) e).getBindingResult() : ((MethodArgumentNotValidException) e).getBindingResult();
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, getErrorResponse(result));
+        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, getErrors(result));
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static

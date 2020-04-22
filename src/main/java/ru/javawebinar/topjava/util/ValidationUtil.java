@@ -79,7 +79,7 @@ public class ValidationUtil {
         }
     }
 
-    public static List<String> getErrorResponse(BindingResult result) {
+    public static List<String> getErrors(BindingResult result) {
         List<String> collect = result.getFieldErrors().stream()
                 .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                 .collect(toList());
