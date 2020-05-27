@@ -7,7 +7,6 @@ Development of a fully functional Spring / JPA Enterprise application with autho
 
 ![topjava_structure](https://user-images.githubusercontent.com/13649199/27433714-8294e6fe-575e-11e7-9c41-7f6e16c5ebe5.jpg)
 
-## <a href="description.md">Описание и план проекта</a>
 ### <a href="http://cuentacalorias.herokuapp.com/login" target=_blank>See the working project version</a>
 
 
